@@ -36,7 +36,7 @@ public class QuizActivity extends AppCompatActivity {
     };
 
     private int mCurrentIndex = 0;
-    private boolean mIsCheater;
+    private boolean mIsCheater = false;
 
     private void updateQuestion() {
         int question = mQuestionBank[mCurrentIndex].getTextResId();
@@ -63,8 +63,6 @@ public class QuizActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate(Bundle) called");
-
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
             mIsCheater = savedInstanceState.getBoolean(CHEAT_STATUS, false);
@@ -79,6 +77,7 @@ public class QuizActivity extends AppCompatActivity {
         mQuestionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mIsCheater = false;
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 updateQuestion();
             }
@@ -105,13 +104,10 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Start CheatActivity
-//                Intent i = new Intent(QuizActivity.this, CheatActivity.class);
                 boolean answer_is_true = mQuestionBank[mCurrentIndex].isAnswerTrue();
                 Intent i = CheatActivity.newIntent(QuizActivity.this, answer_is_true);
-//                startActivity(i);
                 startActivityForResult(i, REQUEST_CODE_CHEAT);
             }
-
         });
 
         mPrevButton = (Button) findViewById(R.id.prev_button);
